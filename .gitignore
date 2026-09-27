@@ -1,0 +1,7 @@
+# Your own house config and generated output stay local
+dashboard/house.yaml
+dashboard/*.json
+*.json
+!hacs.json
+dashboard/pylib
+__pycache__/

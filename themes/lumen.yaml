@@ -1,0 +1,153 @@
+# Lumen — a modern, calm Home Assistant theme with frosted-glass cards.
+# https://github.com/vicvancooten/lumen-ha
+# Install through HACS (Frontend → Themes) or copy this file to /config/themes/lumen.yaml,
+# then run Developer tools → YAML → Reload themes. card-mod is optional but recommended
+# (it adds the frosted blur); the Inter font is loaded by the dashboard generator.
+Lumen:
+  # ---------- Typography ----------
+  primary-font-family: "Inter, 'SF Pro Display', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+  ha-font-family-body: "var(--primary-font-family)"
+  ha-font-family-heading: "var(--primary-font-family)"
+  paper-font-common-base_-_font-family: "var(--primary-font-family)"
+  mdc-typography-font-family: "var(--primary-font-family)"
+
+  # ---------- Shape ----------
+  ha-card-border-radius: "22px"
+  ha-card-border-width: "1px"
+  ha-dialog-border-radius: "28px"
+  ha-border-radius-lg: "18px"
+  ha-tile-icon-border-radius: "14px"
+  ha-badge-border-radius: "14px"
+  mush-card-primary-font-weight: "600"
+  mush-chip-border-radius: "14px"
+  mush-chip-spacing: "8px"
+
+  # ---------- Shared accents ----------
+  accent-color: "#ffb547"
+  state-light-on-color: "#ffb547"
+  state-light-active-color: "#ffb547"
+  state-switch-on-color: "#8b7cff"
+  state-media_player-active-color: "#ff6fa5"
+  state-vacuum-active-color: "#2dd4bf"
+  state-binary_sensor-active-color: "#34d399"
+  state-alarm_control_panel-armed_home-color: "#ff7a6b"
+  state-alarm_control_panel-armed_away-color: "#ff5a5f"
+  state-alarm_control_panel-disarmed-color: "#34d399"
+  success-color: "#34d399"
+  warning-color: "#fbbf24"
+  error-color: "#ff5a5f"
+  info-color: "#60a5fa"
+
+  modes:
+    # ============================== DARK ==============================
+    dark:
+      primary-color: "#8b7cff"
+      light-primary-color: "#b3a9ff"
+      dark-primary-color: "#6c5ce7"
+      text-primary-color: "#ffffff"
+
+      primary-background-color: "#0d0f14"
+      secondary-background-color: "#12151c"
+      lovelace-background: >-
+        radial-gradient(1200px 700px at 0% 0%, rgba(139,124,255,.14), transparent 60%),
+        radial-gradient(900px 600px at 100% 20%, rgba(255,181,71,.07), transparent 60%),
+        #0d0f14
+      card-background-color: "#161a23"
+      ha-card-background: "rgba(24, 28, 38, 0.72)"
+      ha-card-border-color: "rgba(255, 255, 255, 0.07)"
+      ha-card-box-shadow: "0 12px 32px -14px rgba(0, 0, 0, 0.6)"
+      ha-dialog-surface-background: "#161a23"
+      mdc-theme-surface: "#161a23"
+      divider-color: "rgba(255, 255, 255, 0.07)"
+      outline-color: "rgba(255, 255, 255, 0.10)"
+
+      primary-text-color: "#eef0f6"
+      secondary-text-color: "#9aa1b3"
+      disabled-text-color: "#5b6273"
+      state-icon-color: "#9aa1b3"
+      paper-item-icon-color: "#9aa1b3"
+
+      app-theme-color: "#0d0f14"
+      app-header-background-color: "#0d0f14"
+      app-header-text-color: "#eef0f6"
+      app-header-selection-bar-color: "#8b7cff"
+      sidebar-background-color: "#0f1218"
+      sidebar-text-color: "#c9cedb"
+      sidebar-icon-color: "#8a91a3"
+      sidebar-selected-text-color: "#b3a9ff"
+      sidebar-selected-icon-color: "#b3a9ff"
+
+      input-fill-color: "rgba(255, 255, 255, 0.04)"
+      codemirror-property: "#b3a9ff"
+      switch-checked-color: "#8b7cff"
+      switch-checked-button-color: "#ffffff"
+      switch-checked-track-color: "#8b7cff"
+      switch-unchecked-button-color: "#c9cedb"
+      switch-unchecked-track-color: "#3a4050"
+
+      navbar-background-color: "rgba(22, 26, 35, 0.72)"
+      navbar-route-icon-color: "#9aa1b3"
+      navbar-primary-color: "#8b7cff"
+
+    # ============================== LIGHT ==============================
+    light:
+      primary-color: "#6c5ce7"
+      light-primary-color: "#a29bfe"
+      dark-primary-color: "#5a4bd1"
+      text-primary-color: "#ffffff"
+
+      primary-background-color: "#f3f4f8"
+      secondary-background-color: "#eceef4"
+      lovelace-background: >-
+        radial-gradient(1200px 700px at 0% 0%, rgba(108,92,231,.10), transparent 60%),
+        radial-gradient(900px 600px at 100% 20%, rgba(255,181,71,.10), transparent 60%),
+        #f3f4f8
+      card-background-color: "#ffffff"
+      ha-card-background: "rgba(255, 255, 255, 0.78)"
+      ha-card-border-color: "rgba(17, 24, 39, 0.06)"
+      ha-card-box-shadow: "0 12px 32px -16px rgba(30, 34, 60, 0.25)"
+      ha-dialog-surface-background: "#ffffff"
+      mdc-theme-surface: "#ffffff"
+      divider-color: "rgba(17, 24, 39, 0.08)"
+      outline-color: "rgba(17, 24, 39, 0.12)"
+
+      primary-text-color: "#161a23"
+      secondary-text-color: "#646b7d"
+      disabled-text-color: "#a7adbb"
+      state-icon-color: "#646b7d"
+      paper-item-icon-color: "#646b7d"
+
+      app-theme-color: "#f3f4f8"
+      app-header-background-color: "#f3f4f8"
+      app-header-text-color: "#161a23"
+      app-header-selection-bar-color: "#6c5ce7"
+      sidebar-background-color: "#f7f8fb"
+      sidebar-text-color: "#2b3040"
+      sidebar-icon-color: "#646b7d"
+      sidebar-selected-text-color: "#6c5ce7"
+      sidebar-selected-icon-color: "#6c5ce7"
+
+      input-fill-color: "rgba(17, 24, 39, 0.03)"
+      switch-checked-color: "#6c5ce7"
+      switch-checked-button-color: "#ffffff"
+      switch-checked-track-color: "#6c5ce7"
+      switch-unchecked-button-color: "#ffffff"
+      switch-unchecked-track-color: "#c9cedb"
+
+      navbar-background-color: "rgba(255, 255, 255, 0.78)"
+      navbar-route-icon-color: "#646b7d"
+      navbar-primary-color: "#6c5ce7"
+
+  # ---------- card-mod: frosted glass on every card, everywhere ----------
+  card-mod-theme: Lumen
+  card-mod-card: |
+    ha-card {
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+  card-mod-more-info: |
+    ha-dialog {
+      --mdc-dialog-scrim-color: rgba(5, 6, 10, .55);
+      backdrop-filter: blur(6px);
+    }

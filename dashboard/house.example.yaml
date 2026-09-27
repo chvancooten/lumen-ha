@@ -1,0 +1,128 @@
+# Lumen dashboard — example house config.
+# Copy to house.yaml, replace the entity IDs with your own, then run:
+#   python3 build_dashboard.py house.yaml
+#
+# Keys under `rooms` are Home Assistant area IDs (Settings → Areas → the ID in the URL).
+# The area's picture becomes the room photo. Anything marked optional can be left out.
+# Entity lists accept plain IDs or objects: {entity: light.x, name: ..., icon: ..., color: ...}
+
+home_assistant:
+  url: http://homeassistant.local:8123
+  token_file: ~/.config/lumen/ha-token    # or set the HA_TOKEN environment variable
+
+dashboard:
+  url_path: home-dashboard   # must contain a hyphen; created if it doesn't exist yet
+  title: Home
+  kiosk: true                # hide HA's header + sidebar (needs kiosk-mode)
+
+user_name: Alex              # optional: "Good evening, Alex"
+weather: weather.forecast_home
+
+people:                      # optional: presence chips on the home page
+  - {entity: person.alex, name: Alex, icon: mdi:account}
+  - {entity: person.sam, name: Sam, icon: mdi:account-heart}
+
+power: {entity: sensor.power_consumption, unit: kW}   # optional live power chip (unit: W or kW)
+
+waste:                       # optional bin-collection chip (e.g. the Afvalwijzer integration)
+  next_type: sensor.waste_next_type
+  days_until: sensor.waste_next_in_days
+  next_date: sensor.waste_next_date
+
+quick_settings:              # 3×3 grid of tiles on the home page
+  - {entity: light.all_lights, name: All lights, icon: mdi:lightbulb-group, color: amber}
+  - {entity: scene.evening, name: Evening, icon: mdi:weather-night, color: deep-purple, action: scene}
+  - {entity: alarm_control_panel.home, name: Alarm, icon: mdi:shield-home, color: red}
+  - {entity: light.porch, name: Entrance, icon: mdi:door-open, color: amber}
+  - {entity: light.garden, name: Garden, icon: mdi:pine-tree, color: amber}
+  - {entity: light.terrace, name: Terrace, icon: mdi:string-lights, color: amber}
+  - {entity: vacuum.robot, name: Vacuum, icon: mdi:robot-vacuum, color: teal}
+  - {entity: media_player.whole_house, name: Music, icon: mdi:speaker-multiple, color: pink}
+  - {entity: todo.shopping_list, name: Groceries, icon: mdi:cart-outline, color: cyan, action: todo}
+
+energy:                      # optional
+  graph: sensor.power_consumption
+  badges:
+    - {entity: sensor.electricity_tariff, icon: mdi:clock-outline}
+    - {entity: sensor.co2_intensity, icon: mdi:leaf, color: green}
+  tiles:
+    - {entity: sensor.gas_consumption, name: Gas, icon: mdi:fire, color: deep-orange}
+    - {entity: sensor.grid_fossil_percentage, name: Fossil grid, icon: mdi:factory, color: blue-grey}
+
+floors:                      # `id` is the HA floor ID
+  - {id: ground_floor, path: ground-floor, name: Ground floor, short: Ground, icon: mdi:home-floor-g, tagline: "Living, cooking & outdoors"}
+  - {id: first_floor, path: first-floor, name: First floor, short: First, icon: mdi:home-floor-1, tagline: "Sleeping & working"}
+
+rooms:
+  living_room:
+    floor: ground_floor
+    name: Living room
+    lights: [light.living_room_ceiling, light.living_room_floor_lamp]
+    scenes: [{entity: scene.evening, name: Evening scene}]
+    media: [media_player.living_room_tv, media_player.living_room_speaker]
+    vacuum:                  # optional robot-vacuum panel
+      entity: vacuum.robot
+      name: Vacuum
+      battery: sensor.robot_battery
+      current_room: sensor.robot_current_room
+      last_clean: sensor.robot_last_clean_end
+      brush: sensor.robot_main_brush_time_left
+      filter: sensor.robot_filter_time_left
+      quiet_hours: switch.robot_do_not_disturb
+    motion: [binary_sensor.living_room_occupancy]
+    graphs:
+      - {entity: sensor.living_room_temperature, name: Temperature, color: "#ff9f43"}
+      - {entity: sensor.living_room_humidity, name: Humidity, color: "#54a0ff"}
+    batteries: [sensor.living_room_remote_battery]
+    automations: [automation.living_room_motion_lights]
+
+  kitchen:
+    floor: ground_floor
+    name: Kitchen
+    lights: [light.kitchen]
+    fridge:                  # optional smart-fridge panel
+      fridge_temp: sensor.fridge_temperature
+      freezer_temp: sensor.freezer_temperature
+      doors:
+        - {entity: binary_sensor.fridge_door, name: Fridge door}
+        - {entity: binary_sensor.freezer_door, name: Freezer door}
+      switches:
+        - {entity: switch.fridge_power_cool, name: Power cool, icon: mdi:snowflake-alert}
+        - {entity: switch.fridge_power_freeze, name: Power freeze, icon: mdi:snowflake-melt, color: blue}
+      filter: sensor.fridge_water_filter_usage
+      power: sensor.fridge_power
+      energy: sensor.fridge_energy
+
+  garden:
+    floor: ground_floor
+    name: Garden
+    lights: [light.garden]
+    camera: camera.garden
+    power: [sensor.garden_plug_power, sensor.garden_plug_energy]   # graph + total
+    automations: [automation.garden_lights_at_sunset]
+
+  bedroom:
+    floor: first_floor
+    name: Bedroom
+    lights: [light.bedroom]
+    media: [media_player.bedroom_tv, media_player.bedroom_speaker]
+    sound_switches:          # optional speaker toggles (e.g. Sonos)
+      - {entity: switch.bedroom_speaker_night_sound, name: Night sound}
+      - {entity: switch.bedroom_speaker_speech_enhancement, name: Speech enhancement}
+    graphs:
+      - {entity: sensor.bedroom_temperature, name: Temperature, color: "#ff9f43"}
+    next_alarm: sensor.phone_next_alarm
+    batteries: [sensor.bedroom_sensor_battery]
+
+  office:
+    floor: first_floor
+    name: Office
+    lights: [light.office_desk]
+    motion: [binary_sensor.office_presence]
+    contacts: [binary_sensor.office_window]
+
+  bathroom:
+    floor: first_floor
+    name: Bathroom
+    lights: [light.bathroom]
+    motion: [binary_sensor.bathroom_motion]
