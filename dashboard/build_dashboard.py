@@ -14,6 +14,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -466,11 +467,11 @@ HAUNT_PROMPT = (
     "Edit this photo of a room. Long, wet, jet-black human hair pours out of one of the upper corners, "
     "where the walls meet the ceiling, and hangs down in thick tangled strands, like the ghost in the "
     "film The Grudge. Keep everything else exactly as it is: same camera angle, framing, furniture and "
-    "lighting. Photorealistic, no people, no text.")
+    "lighting. Photorealistic. Don't add people or text.")
 HAUNT_PROMPT_NO_PHOTO = (
     "Photo of a dim, empty {name}, looking up into the corner where the walls meet the ceiling. Long, "
     "wet, jet-black human hair pours out of the corner and hangs down in thick tangled strands, like "
-    "the ghost in the film The Grudge. Photorealistic, wide angle, no people, no text.")
+    "the ghost in the film The Grudge. Photorealistic, wide angle. Don't add people or text.")
 HAUNT_CACHE = "haunted-cache.json"
 
 # Sits between the room photo and the card content. Hidden until HAUNT_JS sets
@@ -526,18 +527,22 @@ def haunted_photo(room, picture, hc):
         with open(os.path.expanduser(hc["api_key_file"])) as fh:
             key = fh.read().strip()
     api = hc.get("api_url", "https://api.openai.com/v1").rstrip("/")
-    model = hc.get("model", "gpt-image-1")
+    # gpt-image-2 keeps the photo's framing and aspect ratio, so the overlay lines up exactly.
+    model = hc.get("model", "gpt-image-2")
+    quality = hc.get("quality", "high")
     if picture:
+        # HA area pictures are served as thumbnails; the model gets more detail from the original.
+        picture = re.sub(r"^(/api/image/serve/[^/]+)/\d+x\d+$", r"\1/original", picture)
         # Only send the HA token to HA itself, not to an external picture URL.
         auth = {} if picture.startswith("http") else {"Authorization": f"Bearer {HA['token']}"}
         photo, ctype = http(picture, headers=auth)
         prompt = hc.get("prompt", HAUNT_PROMPT).replace("{name}", room["name"])
-        body, form = multipart({"model": model, "prompt": prompt},
+        body, form = multipart({"model": model, "prompt": prompt, "quality": quality},
                                {"image": ("room." + ctype.split("/")[-1], ctype, photo)})
         reply, _ = http(f"{api}/images/edits", body, {"Authorization": f"Bearer {key}", "Content-Type": form})
     else:
         prompt = hc.get("prompt", HAUNT_PROMPT_NO_PHOTO).replace("{name}", room["name"].lower())
-        body = json.dumps({"model": model, "prompt": prompt, "size": "1536x1024"}).encode()
+        body = json.dumps({"model": model, "prompt": prompt, "quality": quality, "size": "1536x1024"}).encode()
         reply, _ = http(f"{api}/images/generations", body,
                         {"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
     return base64.b64decode(json.loads(reply)["data"][0]["b64_json"])
@@ -565,7 +570,7 @@ def haunt(call, areas, dry_run):
             continue
         picture = pictures.get(area_id)
         fingerprint = hashlib.sha256(json.dumps(
-            [picture, hc.get("prompt"), hc.get("model"), room["name"]]).encode()).hexdigest()[:16]
+            [picture, hc.get("prompt"), hc.get("model"), hc.get("quality"), room["name"]]).encode()).hexdigest()[:16]
         hit = cache.get(area_id)
         if (hit and hit["fingerprint"] == fingerprint and "--rehaunt" not in sys.argv
                 and (stored is None or hit["id"] in stored)):
